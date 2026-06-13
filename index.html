@@ -1,0 +1,1459 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>أريج أحمد | Areej Ahmed — Mobile Photography</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;900&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&display=swap" rel="stylesheet" />
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            obsidian: '#0F0F10',
+            charcoal: '#1A1A1A',
+            surface: '#222224',
+            gold: '#D4AF37',
+            'gold-light': '#E8C96B',
+            'gold-muted': '#C5A059',
+            'gold-dim': '#8A6F2E',
+            cream: '#F5F5F3',
+            'cream-muted': '#C8C8C5',
+          },
+          fontFamily: {
+            arabic: ['Cairo', 'sans-serif'],
+            display: ['Cormorant Garamond', 'serif'],
+          },
+        },
+      },
+    };
+  </script>
+
+  <style>
+    /* ─── Base ─────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      background-color: #0F0F10;
+      color: #F5F5F3;
+      font-family: 'Cairo', sans-serif;
+      overflow-x: hidden;
+    }
+    ::selection { background: #D4AF3755; color: #F5F5F3; }
+
+    /* ─── Scrollbar ─────────────────────────────────────── */
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: #0F0F10; }
+    ::-webkit-scrollbar-thumb { background: #D4AF37; border-radius: 2px; }
+
+    /* ─── Typography helpers ────────────────────────────── */
+    .font-display { font-family: 'Cormorant Garamond', serif; }
+
+    /* ─── Gold gradient text ────────────────────────────── */
+    .gold-text {
+      background: linear-gradient(135deg, #D4AF37, #F5D76E, #C5A059);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    /* ─── Glassmorphism ─────────────────────────────────── */
+    .glass {
+      background: rgba(26,26,26,0.65);
+      backdrop-filter: blur(16px) saturate(160%);
+      -webkit-backdrop-filter: blur(16px) saturate(160%);
+      border: 1px solid rgba(212,175,55,0.15);
+    }
+    .glass-light {
+      background: rgba(255,255,255,0.04);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255,255,255,0.07);
+    }
+
+    /* ─── Navbar ─────────────────────────────────────────── */
+    #navbar {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      transition: all 0.4s ease;
+    }
+    #navbar.scrolled {
+      background: rgba(15,15,16,0.85);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(212,175,55,0.12);
+      box-shadow: 0 4px 40px rgba(0,0,0,0.6);
+    }
+    .nav-link {
+      position: relative;
+      color: #C8C8C5;
+      transition: color 0.3s;
+    }
+    .nav-link::after {
+      content: '';
+      position: absolute; bottom: -3px; left: 0; right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, #D4AF37, #C5A059);
+      transform: scaleX(0);
+      transition: transform 0.3s ease;
+    }
+    .nav-link:hover { color: #D4AF37; }
+    .nav-link:hover::after { transform: scaleX(1); }
+
+    /* ─── Hero ───────────────────────────────────────────── */
+    #hero {
+      position: relative;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      overflow: hidden;
+    }
+    .hero-slide {
+      position: absolute; inset: 0;
+      background-size: cover; background-position: center;
+      opacity: 0;
+      transition: opacity 1.5s ease;
+    }
+    .hero-slide.active { opacity: 1; }
+    .hero-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(
+        160deg,
+        rgba(15,15,16,0.82) 0%,
+        rgba(15,15,16,0.5) 50%,
+        rgba(15,15,16,0.88) 100%
+      );
+    }
+    .hero-content { position: relative; z-index: 2; }
+
+    /* ─── Decorative gold line ───────────────────────────── */
+    .gold-line {
+      display: inline-block;
+      width: 60px; height: 2px;
+      background: linear-gradient(90deg, #D4AF37, transparent);
+    }
+    .gold-line-full {
+      width: 100%; height: 1px;
+      background: linear-gradient(90deg, transparent, #D4AF37, transparent);
+      opacity: 0.35;
+    }
+
+    /* ─── Floating dots (hero decoration) ───────────────── */
+    .particle {
+      position: absolute;
+      border-radius: 50%;
+      background: #D4AF37;
+      opacity: 0;
+      animation: float-up var(--dur, 6s) ease-in-out infinite;
+      animation-delay: var(--delay, 0s);
+    }
+    @keyframes float-up {
+      0% { transform: translateY(0) scale(1); opacity: 0; }
+      20% { opacity: 0.4; }
+      80% { opacity: 0.15; }
+      100% { transform: translateY(-120px) scale(0.3); opacity: 0; }
+    }
+
+    /* ─── Scroll reveal ─────────────────────────────────── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.8s ease, transform 0.8s ease;
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .reveal-left {
+      opacity: 0;
+      transform: translateX(-40px);
+      transition: opacity 0.9s ease, transform 0.9s ease;
+    }
+    .reveal-left.visible { opacity: 1; transform: translateX(0); }
+    .reveal-right {
+      opacity: 0;
+      transform: translateX(40px);
+      transition: opacity 0.9s ease, transform 0.9s ease;
+    }
+    .reveal-right.visible { opacity: 1; transform: translateX(0); }
+
+    /* ─── Portfolio Grid ─────────────────────────────────── */
+    .masonry-grid {
+      columns: 2;
+      column-gap: 10px;
+    }
+    @media (min-width: 768px) {
+      .masonry-grid { columns: 3; column-gap: 14px; }
+    }
+    @media (min-width: 1024px) {
+      .masonry-grid { columns: 4; column-gap: 16px; }
+    }
+    .masonry-item {
+      break-inside: avoid;
+      margin-bottom: 10px;
+      position: relative;
+      overflow: hidden;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+    @media (min-width: 768px) {
+      .masonry-item { margin-bottom: 14px; border-radius: 12px; }
+    }
+    .masonry-item img {
+      width: 100%;
+      display: block;
+      transition: transform 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+    .masonry-item:hover img { transform: scale(1.08); }
+    .masonry-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(
+        0deg,
+        rgba(10,10,11,0.92) 0%,
+        rgba(10,10,11,0.4) 50%,
+        transparent 100%
+      );
+      opacity: 0;
+      transition: opacity 0.4s ease;
+      display: flex;
+      align-items: flex-end;
+      padding: 16px;
+    }
+    .masonry-item:hover .masonry-overlay { opacity: 1; }
+    .masonry-caption {
+      background: rgba(15,15,16,0.6);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border: 1px solid rgba(212,175,55,0.2);
+      border-radius: 8px;
+      padding: 8px 12px;
+      transform: translateY(10px);
+      transition: transform 0.4s ease;
+      width: 100%;
+    }
+    .masonry-item:hover .masonry-caption { transform: translateY(0); }
+
+    /* ─── Pricing cards ─────────────────────────────────── */
+    .pricing-card {
+      transition: transform 0.35s ease, box-shadow 0.35s ease;
+    }
+    .pricing-card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 24px 60px rgba(0,0,0,0.6);
+    }
+    .royal-glow {
+      box-shadow:
+        0 0 0 1px rgba(212,175,55,0.5),
+        0 0 20px rgba(212,175,55,0.15),
+        0 0 50px rgba(212,175,55,0.06);
+      animation: royal-pulse 3s ease-in-out infinite;
+    }
+    @keyframes royal-pulse {
+      0%, 100% { box-shadow: 0 0 0 1px rgba(212,175,55,0.5), 0 0 20px rgba(212,175,55,0.15), 0 0 50px rgba(212,175,55,0.06); }
+      50%       { box-shadow: 0 0 0 1px rgba(212,175,55,0.8), 0 0 35px rgba(212,175,55,0.25), 0 0 70px rgba(212,175,55,0.12); }
+    }
+    .check-icon { color: #D4AF37; }
+
+    /* ─── Testimonials slider ───────────────────────────── */
+    .testimonials-track {
+      display: flex;
+      transition: transform 0.7s cubic-bezier(0.77, 0, 0.175, 1);
+    }
+    .testimonial-card {
+      flex: 0 0 100%;
+    }
+    @media (min-width: 768px) {
+      .testimonial-card { flex: 0 0 50%; }
+    }
+    @media (min-width: 1024px) {
+      .testimonial-card { flex: 0 0 33.333%; }
+    }
+
+    /* ─── Contact form ─────────────────────────────────── */
+    .form-input {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(212,175,55,0.2);
+      color: #F5F5F3;
+      transition: border-color 0.3s, box-shadow 0.3s;
+      outline: none;
+    }
+    .form-input:focus {
+      border-color: rgba(212,175,55,0.7);
+      box-shadow: 0 0 0 3px rgba(212,175,55,0.08);
+    }
+    .form-input::placeholder { color: #666; }
+    .form-input:focus::placeholder { color: #888; }
+
+    /* ─── CTA button ────────────────────────────────────── */
+    .btn-gold {
+      position: relative;
+      overflow: hidden;
+      background: linear-gradient(135deg, #D4AF37, #C5A059);
+      color: #0F0F10;
+      font-weight: 700;
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+    .btn-gold::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: linear-gradient(135deg, #F5D76E, #D4AF37);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    .btn-gold:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(212,175,55,0.4); }
+    .btn-gold:hover::before { opacity: 1; }
+    .btn-gold span { position: relative; z-index: 1; }
+
+    .btn-outline-gold {
+      border: 1px solid rgba(212,175,55,0.6);
+      color: #D4AF37;
+      transition: all 0.3s;
+    }
+    .btn-outline-gold:hover {
+      background: rgba(212,175,55,0.1);
+      border-color: #D4AF37;
+      box-shadow: 0 0 20px rgba(212,175,55,0.15);
+    }
+
+    /* ─── Icon hover glow ───────────────────────────────── */
+    .icon-glow {
+      transition: filter 0.3s, transform 0.3s;
+    }
+    .icon-glow:hover {
+      filter: drop-shadow(0 0 8px rgba(212,175,55,0.7));
+      transform: scale(1.15);
+    }
+
+    /* ─── Section eyebrow ───────────────────────────────── */
+    .eyebrow {
+      font-size: 0.7rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: #D4AF37;
+    }
+
+    /* ─── About feature icons ───────────────────────────── */
+    .feat-icon {
+      width: 52px; height: 52px;
+      border-radius: 14px;
+      border: 1px solid rgba(212,175,55,0.25);
+      display: flex; align-items: center; justify-content: center;
+      background: rgba(212,175,55,0.06);
+      transition: all 0.35s;
+    }
+    .feat-icon:hover {
+      background: rgba(212,175,55,0.14);
+      border-color: rgba(212,175,55,0.6);
+      box-shadow: 0 0 20px rgba(212,175,55,0.15);
+      transform: translateY(-3px);
+    }
+
+    /* ─── Stars ─────────────────────────────────────────── */
+    .star { color: #D4AF37; }
+
+    /* ─── Lightbox ─────────────────────────────────────── */
+    #lightbox {
+      position: fixed; inset: 0; z-index: 200;
+      background: rgba(0,0,0,0.95);
+      display: none;
+      align-items: center;
+      justify-content: center;
+    }
+    #lightbox.open { display: flex; }
+    #lightbox img {
+      max-width: 90vw;
+      max-height: 90vh;
+      object-fit: contain;
+      border-radius: 8px;
+      box-shadow: 0 0 60px rgba(0,0,0,0.8);
+    }
+    #lightbox-close {
+      position: absolute; top: 20px; right: 24px;
+      cursor: pointer;
+      color: #D4AF37;
+      transition: transform 0.3s;
+    }
+    #lightbox-close:hover { transform: rotate(90deg); }
+
+    /* ─── Footer social icons ───────────────────────────── */
+    .social-btn {
+      width: 42px; height: 42px;
+      border-radius: 50%;
+      border: 1px solid rgba(212,175,55,0.3);
+      display: flex; align-items: center; justify-content: center;
+      color: #C8C8C5;
+      transition: all 0.3s;
+    }
+    .social-btn:hover {
+      border-color: #D4AF37;
+      color: #D4AF37;
+      background: rgba(212,175,55,0.08);
+      box-shadow: 0 0 16px rgba(212,175,55,0.2);
+    }
+
+    /* ─── Smooth section padding ────────────────────────── */
+    section { padding: 90px 0; }
+
+    /* ─── Mobile nav menu ───────────────────────────────── */
+    #mobile-menu {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.5s ease;
+    }
+    #mobile-menu.open { max-height: 400px; }
+
+    /* ─── Animated underline heading ────────────────────── */
+    .heading-line {
+      position: relative;
+      display: inline-block;
+    }
+    .heading-line::after {
+      content: '';
+      position: absolute;
+      bottom: -6px; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, #D4AF37, #C5A059, transparent);
+    }
+  </style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════════════════
+     LIGHTBOX
+══════════════════════════════════════════════════════ -->
+<div id="lightbox" role="dialog" aria-modal="true">
+  <span id="lightbox-close" onclick="closeLightbox()" aria-label="إغلاق">
+    <i data-lucide="x" style="width:32px;height:32px;"></i>
+  </span>
+  <img id="lightbox-img" src="" alt="صورة موسعة" />
+</div>
+
+<!-- ══════════════════════════════════════════════════════
+     NAVBAR
+══════════════════════════════════════════════════════ -->
+<nav id="navbar" class="w-full py-4 px-5 md:px-10 lg:px-16">
+  <div class="max-w-7xl mx-auto flex items-center justify-between gap-4">
+
+    <!-- Logo -->
+    <a href="#hero" class="flex-shrink-0">
+      <div class="flex flex-col leading-none">
+        <span class="font-arabic font-bold text-lg text-gold-light tracking-wide">أريج أحمد</span>
+        <span class="font-display italic text-xs text-cream-muted tracking-widest">Areej Ahmed</span>
+      </div>
+    </a>
+
+    <!-- Desktop nav links -->
+    <ul class="hidden md:flex items-center gap-7 list-none font-arabic text-sm">
+      <li><a href="#about" class="nav-link">عني</a></li>
+      <li><a href="#portfolio" class="nav-link">الأعمال</a></li>
+      <li><a href="#pricing" class="nav-link">الباقات</a></li>
+      <li><a href="#testimonials" class="nav-link">آراء العملاء</a></li>
+      <li><a href="#contact" class="nav-link">تواصل معي</a></li>
+    </ul>
+
+    <!-- Book Now CTA -->
+    <a href="#contact" class="hidden md:inline-flex btn-gold px-5 py-2.5 rounded-full text-sm font-arabic font-semibold">
+      <span>احجز جلستك ✦</span>
+    </a>
+
+    <!-- Hamburger -->
+    <button id="hamburger" class="md:hidden text-cream-muted focus:outline-none" aria-label="القائمة">
+      <i data-lucide="menu" style="width:24px;height:24px;"></i>
+    </button>
+  </div>
+
+  <!-- Mobile menu -->
+  <div id="mobile-menu" class="md:hidden">
+    <ul class="flex flex-col gap-1 px-2 pt-3 pb-4 font-arabic text-sm list-none">
+      <li><a href="#about"        class="block py-2.5 px-4 rounded-lg text-cream-muted hover:text-gold hover:bg-white/5 transition-colors" onclick="closeMobileMenu()">عني</a></li>
+      <li><a href="#portfolio"    class="block py-2.5 px-4 rounded-lg text-cream-muted hover:text-gold hover:bg-white/5 transition-colors" onclick="closeMobileMenu()">الأعمال</a></li>
+      <li><a href="#pricing"      class="block py-2.5 px-4 rounded-lg text-cream-muted hover:text-gold hover:bg-white/5 transition-colors" onclick="closeMobileMenu()">الباقات</a></li>
+      <li><a href="#testimonials" class="block py-2.5 px-4 rounded-lg text-cream-muted hover:text-gold hover:bg-white/5 transition-colors" onclick="closeMobileMenu()">آراء العملاء</a></li>
+      <li><a href="#contact"      class="block py-2.5 px-4 rounded-lg text-cream-muted hover:text-gold hover:bg-white/5 transition-colors" onclick="closeMobileMenu()">تواصل معي</a></li>
+      <li class="mt-2">
+        <a href="#contact" class="btn-gold block text-center py-3 px-4 rounded-full font-semibold" onclick="closeMobileMenu()">
+          <span>احجز جلستك ✦</span>
+        </a>
+      </li>
+    </ul>
+  </div>
+</nav>
+
+<!-- ══════════════════════════════════════════════════════
+     HERO
+══════════════════════════════════════════════════════ -->
+<section id="hero" style="padding:0;">
+
+  <!-- Slides -->
+  <div class="hero-slide active" style="background-image:url('https://images.unsplash.com/photo-1519741347686-c1e331c3c0b9?w=1600&q=80&fit=crop');"></div>
+  <div class="hero-slide" style="background-image:url('https://images.unsplash.com/photo-1606800052052-a08af7148866?w=1600&q=80&fit=crop');"></div>
+  <div class="hero-slide" style="background-image:url('https://images.unsplash.com/photo-1511285560929-80b456fea0bc?w=1600&q=80&fit=crop');"></div>
+
+  <!-- Overlay -->
+  <div class="hero-overlay"></div>
+
+  <!-- Floating particles -->
+  <div class="particle" style="width:3px;height:3px;left:15%;bottom:20%;--dur:7s;--delay:0s;"></div>
+  <div class="particle" style="width:2px;height:2px;left:35%;bottom:15%;--dur:9s;--delay:1.5s;"></div>
+  <div class="particle" style="width:4px;height:4px;left:55%;bottom:25%;--dur:6s;--delay:0.8s;"></div>
+  <div class="particle" style="width:2px;height:2px;left:70%;bottom:18%;--dur:8s;--delay:2.2s;"></div>
+  <div class="particle" style="width:3px;height:3px;left:85%;bottom:22%;--dur:7.5s;--delay:1s;"></div>
+
+  <!-- Content -->
+  <div class="hero-content max-w-7xl mx-auto px-6 md:px-10 lg:px-16 w-full py-32 min-h-screen flex flex-col justify-center">
+    <div class="max-w-3xl">
+      <p class="eyebrow mb-5 reveal" style="transition-delay:0.1s">✦ Mobile Photography · Saudi Arabia</p>
+
+      <h1 class="font-arabic font-black leading-tight mb-6 reveal" style="transition-delay:0.25s; font-size:clamp(2rem,5vw,4rem);">
+        نخلّد <span class="gold-text">أجمل لحظاتكم</span><br />
+        بعدسة الجوال المحترفة
+      </h1>
+
+      <p class="font-display italic text-cream-muted mb-3 reveal" style="transition-delay:0.35s; font-size:clamp(1.1rem,2.5vw,1.6rem);">
+        "Capturing your most precious moments with artistry & soul."
+      </p>
+
+      <p class="font-arabic text-cream-muted text-sm md:text-base leading-relaxed max-w-xl mb-10 reveal" style="transition-delay:0.45s;">
+        متخصصة في تصوير حفلات الأعراس والمناسبات الراقية عبر كاميرا الجوال الاحترافية — حيث تلتقي الأناقة بالعفوية.
+      </p>
+
+      <div class="flex flex-wrap gap-4 reveal" style="transition-delay:0.55s;">
+        <a href="#portfolio" class="btn-gold px-7 py-3.5 rounded-full font-arabic font-semibold text-sm md:text-base">
+          <span>استعرض الأعمال</span>
+        </a>
+        <a href="#contact" class="btn-outline-gold px-7 py-3.5 rounded-full font-arabic font-semibold text-sm md:text-base">
+          احجز الآن
+        </a>
+      </div>
+
+      <!-- Stats -->
+      <div class="flex flex-wrap gap-8 mt-14 reveal" style="transition-delay:0.65s;">
+        <div>
+          <span class="gold-text font-arabic font-black text-3xl md:text-4xl">+٣٠٠</span>
+          <p class="font-arabic text-cream-muted text-xs mt-1">حفل موثق</p>
+        </div>
+        <div class="w-px bg-gold/20"></div>
+        <div>
+          <span class="gold-text font-arabic font-black text-3xl md:text-4xl">٧+</span>
+          <p class="font-arabic text-cream-muted text-xs mt-1">سنوات خبرة</p>
+        </div>
+        <div class="w-px bg-gold/20"></div>
+        <div>
+          <span class="gold-text font-arabic font-black text-3xl md:text-4xl">٩٨٪</span>
+          <p class="font-arabic text-cream-muted text-xs mt-1">رضا العملاء</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Slide dots -->
+  <div class="absolute bottom-8 left-1/2 -translate-x-1/2 flex gap-2 z-10" id="hero-dots">
+    <button class="slide-dot w-6 h-1.5 rounded-full bg-gold transition-all duration-300" data-i="0"></button>
+    <button class="slide-dot w-2 h-1.5 rounded-full bg-cream/30 transition-all duration-300" data-i="1"></button>
+    <button class="slide-dot w-2 h-1.5 rounded-full bg-cream/30 transition-all duration-300" data-i="2"></button>
+  </div>
+
+  <!-- Scroll hint -->
+  <div class="absolute bottom-8 right-8 md:right-16 z-10 flex flex-col items-center gap-2 opacity-50">
+    <span class="font-display italic text-xs text-cream-muted" style="writing-mode:vertical-rl;">scroll</span>
+    <div style="width:1px;height:40px;background:linear-gradient(to bottom,#D4AF37,transparent);"></div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════
+     ABOUT
+══════════════════════════════════════════════════════ -->
+<section id="about" class="relative">
+  <!-- Subtle bg accent -->
+  <div style="position:absolute;top:-200px;left:-200px;width:600px;height:600px;background:radial-gradient(circle,rgba(212,175,55,0.04) 0%,transparent 70%);pointer-events:none;"></div>
+
+  <div class="max-w-7xl mx-auto px-6 md:px-10 lg:px-16">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
+
+      <!-- Image side -->
+      <div class="relative reveal-right order-2 lg:order-1">
+        <div class="relative rounded-2xl overflow-hidden" style="aspect-ratio:4/5;">
+          <img
+            src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=800&q=80&fit=crop&crop=face"
+            alt="أريج أحمد"
+            class="w-full h-full object-cover"
+          />
+          <!-- Gold frame accent -->
+          <div style="position:absolute;inset:0;border-radius:inherit;box-shadow:inset 0 0 0 1px rgba(212,175,55,0.2);"></div>
+        </div>
+        <!-- Floating badge -->
+        <div class="glass absolute -bottom-5 -right-5 md:-bottom-6 md:-right-6 rounded-2xl px-5 py-4 text-center z-10">
+          <span class="gold-text font-black font-arabic text-2xl block">+٣٠٠</span>
+          <span class="font-arabic text-cream-muted text-xs">حفل موثق</span>
+        </div>
+        <!-- Corner ornament -->
+        <div style="position:absolute;top:-10px;left:-10px;width:60px;height:60px;border-top:2px solid #D4AF37;border-left:2px solid #D4AF37;border-radius:4px 0 0 0;opacity:0.5;"></div>
+        <div style="position:absolute;bottom:10px;right:-10px;width:60px;height:60px;border-bottom:2px solid #D4AF37;border-right:2px solid #D4AF37;border-radius:0 0 4px 0;opacity:0.5;"></div>
+      </div>
+
+      <!-- Text side -->
+      <div class="order-1 lg:order-2 reveal-left">
+        <p class="eyebrow mb-4">✦ من أنا</p>
+        <h2 class="font-arabic font-black text-3xl md:text-4xl mb-5 leading-snug">
+          الجمال في <span class="gold-text">التفاصيل</span> الصغيرة
+        </h2>
+        <div class="gold-line mb-6"></div>
+
+        <p class="font-arabic text-cream-muted leading-relaxed text-sm md:text-base mb-4">
+          مرحباً! أنا <strong class="text-cream">أريج أحمد</strong>، مصورة متخصصة في توثيق أجمل اللحظات الحياتية بكاميرا الجوال الاحترافية. أؤمن أن الجمال الحقيقي يكمن في العفوية، وأن أعمق المشاعر تُلتقط لا تُصطنع.
+        </p>
+        <p class="font-arabic text-cream-muted leading-relaxed text-sm md:text-base mb-8">
+          عملت مع أرقى العروسات والعائلات في المملكة العربية السعودية، موثقةً ذكريات تُعاد مشاهدتها جيلاً بعد جيل. أسلوبي مزيج من الحميمية والفن، حيث كل صورة تحكي قصة.
+        </p>
+
+        <!-- Features -->
+        <div class="grid grid-cols-2 gap-4">
+          <div class="flex items-center gap-3">
+            <div class="feat-icon">
+              <i data-lucide="smartphone" class="text-gold icon-glow" style="width:20px;height:20px;"></i>
+            </div>
+            <span class="font-arabic text-cream-muted text-xs leading-snug">تصوير جوال احترافي</span>
+          </div>
+          <div class="flex items-center gap-3">
+            <div class="feat-icon">
+              <i data-lucide="sparkles" class="text-gold icon-glow" style="width:20px;height:20px;"></i>
+            </div>
+            <span class="font-arabic text-cream-muted text-xs leading-snug">فلترة فنية حصرية</span>
+          </div>
+          <div class="flex items-center gap-3">
+            <div class="feat-icon">
+              <i data-lucide="heart" class="text-gold icon-glow" style="width:20px;height:20px;"></i>
+            </div>
+            <span class="font-arabic text-cream-muted text-xs leading-snug">لمسة عاطفية صادقة</span>
+          </div>
+          <div class="flex items-center gap-3">
+            <div class="feat-icon">
+              <i data-lucide="clock" class="text-gold icon-glow" style="width:20px;height:20px;"></i>
+            </div>
+            <span class="font-arabic text-cream-muted text-xs leading-snug">تسليم خلال ٧٢ ساعة</span>
+          </div>
+          <div class="flex items-center gap-3">
+            <div class="feat-icon">
+              <i data-lucide="moon-star" class="text-gold icon-glow" style="width:20px;height:20px;"></i>
+            </div>
+            <span class="font-arabic text-cream-muted text-xs leading-snug">مناسبات نسائية</span>
+          </div>
+          <div class="flex items-center gap-3">
+            <div class="feat-icon">
+              <i data-lucide="award" class="text-gold icon-glow" style="width:20px;height:20px;"></i>
+            </div>
+            <span class="font-arabic text-cream-muted text-xs leading-snug">جودة تُحاكي DSLR</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════
+     PORTFOLIO MASONRY GRID
+══════════════════════════════════════════════════════ -->
+<section id="portfolio" style="padding-bottom:60px;">
+  <div style="height:1px;background:linear-gradient(90deg,transparent,rgba(212,175,55,0.25),transparent);margin-bottom:90px;"></div>
+  <div class="max-w-7xl mx-auto px-4 md:px-10 lg:px-16">
+
+    <div class="text-center mb-12 reveal">
+      <p class="eyebrow mb-4">✦ معرض الأعمال</p>
+      <h2 class="font-arabic font-black text-3xl md:text-4xl mb-4">
+        لقطات من <span class="gold-text">قلب اللحظة</span>
+      </h2>
+      <p class="font-arabic text-cream-muted text-sm max-w-md mx-auto">توثيق أعراس ومناسبات فارهة — كل صورة قصيدة بصرية</p>
+    </div>
+
+    <!-- Filter tabs -->
+    <div class="flex flex-wrap justify-center gap-2 mb-10 reveal">
+      <button class="filter-btn active font-arabic text-xs px-5 py-2 rounded-full border border-gold text-gold" data-cat="all">الكل</button>
+      <button class="filter-btn font-arabic text-xs px-5 py-2 rounded-full border border-white/10 text-cream-muted hover:border-gold/50 hover:text-cream transition-colors" data-cat="wedding">أعراس</button>
+      <button class="filter-btn font-arabic text-xs px-5 py-2 rounded-full border border-white/10 text-cream-muted hover:border-gold/50 hover:text-cream transition-colors" data-cat="event">مناسبات</button>
+      <button class="filter-btn font-arabic text-xs px-5 py-2 rounded-full border border-white/10 text-cream-muted hover:border-gold/50 hover:text-cream transition-colors" data-cat="portrait">بورتريه</button>
+    </div>
+
+    <!-- Grid -->
+    <div class="masonry-grid reveal" id="portfolio-grid">
+
+      <!-- Row 1 items -->
+      <div class="masonry-item" data-cat="wedding" onclick="openLightbox('https://images.unsplash.com/photo-1519741347686-c1e331c3c0b9?w=1200&q=90&fit=crop')">
+        <img src="https://images.unsplash.com/photo-1519741347686-c1e331c3c0b9?w=600&q=80&fit=crop" alt="زفاف" loading="lazy" />
+        <div class="masonry-overlay">
+          <div class="masonry-caption">
+            <p class="font-arabic font-semibold text-cream text-xs">لحظة الإشراق</p>
+            <p class="font-arabic text-gold text-xs">زفاف · الرياض</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="masonry-item" data-cat="event" onclick="openLightbox('https://images.unsplash.com/photo-1530103862676-de8c9debad1d?w=1200&q=90&fit=crop')">
+        <img src="https://images.unsplash.com/photo-1530103862676-de8c9debad1d?w=600&q=80&fit=crop" alt="حفل" loading="lazy" />
+        <div class="masonry-overlay">
+          <div class="masonry-caption">
+            <p class="font-arabic font-semibold text-cream text-xs">بريق الاحتفال</p>
+            <p class="font-arabic text-gold text-xs">حفل فاخر · جدة</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="masonry-item" data-cat="portrait" onclick="openLightbox('https://images.unsplash.com/photo-1488426862026-3ee34a7d66df?w=1200&q=90&fit=crop')">
+        <img src="https://images.unsplash.com/photo-1488426862026-3ee34a7d66df?w=600&q=80&fit=crop" alt="بورتريه" loading="lazy" />
+        <div class="masonry-overlay">
+          <div class="masonry-caption">
+            <p class="font-arabic font-semibold text-cream text-xs">جمال خالص</p>
+            <p class="font-arabic text-gold text-xs">بورتريه</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="masonry-item" data-cat="wedding" onclick="openLightbox('https://images.unsplash.com/photo-1606800052052-a08af7148866?w=1200&q=90&fit=crop')">
+        <img src="https://images.unsplash.com/photo-1606800052052-a08af7148866?w=600&q=80&fit=crop" alt="زفاف" loading="lazy" />
+        <div class="masonry-overlay">
+          <div class="masonry-caption">
+            <p class="font-arabic font-semibold text-cream text-xs">وعد الأبد</p>
+            <p class="font-arabic text-gold text-xs">زفاف · الدمام</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="masonry-item" data-cat="event" onclick="openLightbox('https://images.unsplash.com/photo-1464366400600-7168b8af9bc3?w=1200&q=90&fit=crop')">
+        <img src="https://images.unsplash.com/photo-1464366400600-7168b8af9bc3?w=600&q=80&fit=crop" alt="ديكور" loading="lazy" />
+        <div class="masonry-overlay">
+          <div class="masonry-caption">
+            <p class="font-arabic font-semibold text-cream text-xs">أناقة التفاصيل</p>
+            <p class="font-arabic text-gold text-xs">ديكور راقٍ</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="masonry-item" data-cat="wedding" onclick="openLightbox('https://images.unsplash.com/photo-1511285560929-80b456fea0bc?w=1200&q=90&fit=crop')">
+        <img src="https://images.unsplash.com/photo-1511285560929-80b456fea0bc?w=600&q=80&fit=crop" alt="عروس" loading="lazy" />
+        <div class="masonry-overlay">
+          <div class="masonry-caption">
+            <p class="font-arabic font-semibold text-cream text-xs">أميرة اليوم</p>
+            <p class="font-arabic text-gold text-xs">زفاف · مكة</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="masonry-item" data-cat="portrait" onclick="openLightbox('https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?w=1200&q=90&fit=crop')">
+        <img src="https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?w=600&q=80&fit=crop" alt="بورتريه" loading="lazy" />
+        <div class="masonry-overlay">
+          <div class="masonry-caption">
+            <p class="font-arabic font-semibold text-cream text-xs">نظرة تروي قصة</p>
+            <p class="font-arabic text-gold text-xs">بورتريه فني</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="masonry-item" data-cat="event" onclick="openLightbox('https://images.unsplash.com/photo-1527529482837-4698179dc6ce?w=1200&q=90&fit=crop')">
+        <img src="https://images.unsplash.com/photo-1527529482837-4698179dc6ce?w=600&q=80&fit=crop" alt="حفلة" loading="lazy" />
+        <div class="masonry-overlay">
+          <div class="masonry-caption">
+            <p class="font-arabic font-semibold text-cream text-xs">ليلة لا تُنسى</p>
+            <p class="font-arabic text-gold text-xs">حفلة فارهة</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="masonry-item" data-cat="wedding" onclick="openLightbox('https://images.unsplash.com/photo-1543132220-3ec99c6094dc?w=1200&q=90&fit=crop')">
+        <img src="https://images.unsplash.com/photo-1543132220-3ec99c6094dc?w=600&q=80&fit=crop" alt="حناء" loading="lazy" />
+        <div class="masonry-overlay">
+          <div class="masonry-caption">
+            <p class="font-arabic font-semibold text-cream text-xs">ليلة الحناء</p>
+            <p class="font-arabic text-gold text-xs">احتفال تقليدي</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="masonry-item" data-cat="portrait" onclick="openLightbox('https://images.unsplash.com/photo-1594744803329-e58b31de8bf5?w=1200&q=90&fit=crop')">
+        <img src="https://images.unsplash.com/photo-1594744803329-e58b31de8bf5?w=600&q=80&fit=crop" alt="بورتريه" loading="lazy" />
+        <div class="masonry-overlay">
+          <div class="masonry-caption">
+            <p class="font-arabic font-semibold text-cream text-xs">ضياء الأنوثة</p>
+            <p class="font-arabic text-gold text-xs">بورتريه</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="masonry-item" data-cat="event" onclick="openLightbox('https://images.unsplash.com/photo-1470753937643-efeb931202a9?w=1200&q=90&fit=crop')">
+        <img src="https://images.unsplash.com/photo-1470753937643-efeb931202a9?w=600&q=80&fit=crop" alt="تجمع" loading="lazy" />
+        <div class="masonry-overlay">
+          <div class="masonry-caption">
+            <p class="font-arabic font-semibold text-cream text-xs">لقاء الأرواح</p>
+            <p class="font-arabic text-gold text-xs">مناسبة خاصة</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="masonry-item" data-cat="wedding" onclick="openLightbox('https://images.unsplash.com/photo-1583939003579-730e3918a45a?w=1200&q=90&fit=crop')">
+        <img src="https://images.unsplash.com/photo-1583939003579-730e3918a45a?w=600&q=80&fit=crop" alt="زواج" loading="lazy" />
+        <div class="masonry-overlay">
+          <div class="masonry-caption">
+            <p class="font-arabic font-semibold text-cream text-xs">بداية الحكاية</p>
+            <p class="font-arabic text-gold text-xs">زفاف راقٍ</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════
+     PRICING
+══════════════════════════════════════════════════════ -->
+<section id="pricing" class="relative">
+  <div style="height:1px;background:linear-gradient(90deg,transparent,rgba(212,175,55,0.25),transparent);margin-bottom:90px;"></div>
+
+  <!-- bg gradient -->
+  <div style="position:absolute;inset:0;background:radial-gradient(ellipse at 50% 50%, rgba(212,175,55,0.03) 0%, transparent 65%);pointer-events:none;"></div>
+
+  <div class="max-w-7xl mx-auto px-6 md:px-10 lg:px-16 relative">
+
+    <div class="text-center mb-14 reveal">
+      <p class="eyebrow mb-4">✦ الباقات</p>
+      <h2 class="font-arabic font-black text-3xl md:text-4xl mb-4">
+        اختاري باقتكِ <span class="gold-text">المثالية</span>
+      </h2>
+      <p class="font-arabic text-cream-muted text-sm max-w-md mx-auto">باقات مصممة لكل مناسبة، بجودة لا تُجارى</p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
+
+      <!-- Silver -->
+      <div class="pricing-card glass-light rounded-2xl p-7 flex flex-col reveal" style="transition-delay:0.1s;">
+        <div class="mb-6">
+          <div class="flex items-center gap-2 mb-3">
+            <i data-lucide="gem" style="width:18px;height:18px;color:#C8C8C5;"></i>
+            <span class="font-arabic font-semibold text-cream-muted text-sm">فضية</span>
+          </div>
+          <div class="font-display text-4xl font-light text-cream">
+            ١٥٠٠
+            <span class="font-arabic text-sm text-cream-muted font-normal"> ر.س</span>
+          </div>
+          <p class="font-arabic text-cream-muted text-xs mt-1">لمدة ٣ ساعات</p>
+        </div>
+        <div class="gold-line-full mb-6"></div>
+        <ul class="flex flex-col gap-3 mb-8 flex-1">
+          <li class="flex items-center gap-3 font-arabic text-xs text-cream-muted">
+            <i data-lucide="check-circle" class="check-icon flex-shrink-0" style="width:16px;height:16px;"></i>
+            جلسة تصوير ٣ ساعات
+          </li>
+          <li class="flex items-center gap-3 font-arabic text-xs text-cream-muted">
+            <i data-lucide="check-circle" class="check-icon flex-shrink-0" style="width:16px;height:16px;"></i>
+            ٥٠ صورة معدّلة
+          </li>
+          <li class="flex items-center gap-3 font-arabic text-xs text-cream-muted">
+            <i data-lucide="check-circle" class="check-icon flex-shrink-0" style="width:16px;height:16px;"></i>
+            تسليم خلال ٧ أيام
+          </li>
+          <li class="flex items-center gap-3 font-arabic text-xs text-cream-muted">
+            <i data-lucide="check-circle" class="check-icon flex-shrink-0" style="width:16px;height:16px;"></i>
+            ألبوم رقمي
+          </li>
+          <li class="flex items-center gap-3 font-arabic text-xs text-cream-muted opacity-40">
+            <i data-lucide="x-circle" class="flex-shrink-0" style="width:16px;height:16px;"></i>
+            مقطع فيديو تذكاري
+          </li>
+        </ul>
+        <a href="#contact" class="btn-outline-gold text-center py-3 rounded-full font-arabic text-xs font-semibold block">احجزي الباقة</a>
+      </div>
+
+      <!-- Gold -->
+      <div class="pricing-card glass rounded-2xl p-7 flex flex-col reveal" style="transition-delay:0.2s;">
+        <div class="mb-6">
+          <div class="flex items-center gap-2 mb-3">
+            <i data-lucide="crown" style="width:18px;height:18px;color:#D4AF37;"></i>
+            <span class="gold-text font-arabic font-semibold text-sm">ذهبية</span>
+          </div>
+          <div class="font-display text-4xl font-light text-cream">
+            ٢٨٠٠
+            <span class="font-arabic text-sm text-cream-muted font-normal"> ر.س</span>
+          </div>
+          <p class="font-arabic text-cream-muted text-xs mt-1">لمدة ٦ ساعات</p>
+        </div>
+        <div class="gold-line-full mb-6"></div>
+        <ul class="flex flex-col gap-3 mb-8 flex-1">
+          <li class="flex items-center gap-3 font-arabic text-xs text-cream-muted">
+            <i data-lucide="check-circle" class="check-icon flex-shrink-0" style="width:16px;height:16px;"></i>
+            جلسة تصوير ٦ ساعات
+          </li>
+          <li class="flex items-center gap-3 font-arabic text-xs text-cream-muted">
+            <i data-lucide="check-circle" class="check-icon flex-shrink-0" style="width:16px;height:16px;"></i>
+            ١٢٠ صورة معدّلة
+          </li>
+          <li class="flex items-center gap-3 font-arabic text-xs text-cream-muted">
+            <i data-lucide="check-circle" class="check-icon flex-shrink-0" style="width:16px;height:16px;"></i>
+            تسليم خلال ٥ أيام
+          </li>
+          <li class="flex items-center gap-3 font-arabic text-xs text-cream-muted">
+            <i data-lucide="check-circle" class="check-icon flex-shrink-0" style="width:16px;height:16px;"></i>
+            ألبوم رقمي احترافي
+          </li>
+          <li class="flex items-center gap-3 font-arabic text-xs text-cream-muted">
+            <i data-lucide="check-circle" class="check-icon flex-shrink-0" style="width:16px;height:16px;"></i>
+            مقطع فيديو ٦٠ ث
+          </li>
+        </ul>
+        <a href="#contact" class="btn-gold text-center py-3 rounded-full font-arabic text-xs font-semibold block">
+          <span>احجزي الباقة</span>
+        </a>
+      </div>
+
+      <!-- Royal -->
+      <div class="pricing-card royal-glow rounded-2xl p-7 flex flex-col reveal" style="background:#191912;transition-delay:0.3s;">
+        <!-- Popular badge -->
+        <div class="flex justify-between items-start mb-6">
+          <div>
+            <div class="flex items-center gap-2 mb-3">
+              <i data-lucide="star" style="width:18px;height:18px;color:#D4AF37;fill:#D4AF37;"></i>
+              <span class="gold-text font-arabic font-semibold text-sm">الملكية</span>
+            </div>
+            <div class="font-display text-4xl font-light text-cream">
+              ٤٥٠٠
+              <span class="font-arabic text-sm text-cream-muted font-normal"> ر.س</span>
+            </div>
+            <p class="font-arabic text-cream-muted text-xs mt-1">يوم كامل</p>
+          </div>
+          <span class="font-arabic text-xs bg-gold text-obsidian font-bold px-3 py-1 rounded-full whitespace-nowrap">الأكثر طلباً ✦</span>
+        </div>
+        <div class="gold-line-full mb-6"></div>
+        <ul class="flex flex-col gap-3 mb-8 flex-1">
+          <li class="flex items-center gap-3 font-arabic text-xs text-cream-muted">
+            <i data-lucide="check-circle" class="check-icon flex-shrink-0" style="width:16px;height:16px;"></i>
+            تصوير يوم كامل (١٢ ساعة)
+          </li>
+          <li class="flex items-center gap-3 font-arabic text-xs text-cream-muted">
+            <i data-lucide="check-circle" class="check-icon flex-shrink-0" style="width:16px;height:16px;"></i>
+            صور بلا حدود — معدّلة بالكامل
+          </li>
+          <li class="flex items-center gap-3 font-arabic text-xs text-cream-muted">
+            <i data-lucide="check-circle" class="check-icon flex-shrink-0" style="width:16px;height:16px;"></i>
+            تسليم خلال ٧٢ ساعة
+          </li>
+          <li class="flex items-center gap-3 font-arabic text-xs text-cream-muted">
+            <i data-lucide="check-circle" class="check-icon flex-shrink-0" style="width:16px;height:16px;"></i>
+            فيديو سينمائي ٣ دقائق
+          </li>
+          <li class="flex items-center gap-3 font-arabic text-xs text-cream-muted">
+            <i data-lucide="check-circle" class="check-icon flex-shrink-0" style="width:16px;height:16px;"></i>
+            ريلز احترافي للسوشيال ميديا
+          </li>
+          <li class="flex items-center gap-3 font-arabic text-xs text-cream-muted">
+            <i data-lucide="check-circle" class="check-icon flex-shrink-0" style="width:16px;height:16px;"></i>
+            مساعدة في الطباعة والتأطير
+          </li>
+        </ul>
+        <a href="#contact" class="btn-gold text-center py-3 rounded-full font-arabic text-xs font-semibold block">
+          <span>احجزي الباقة الملكية ✦</span>
+        </a>
+      </div>
+    </div>
+
+    <p class="text-center font-arabic text-cream-muted text-xs mt-8 reveal opacity-60">جميع الأسعار شاملة الضريبة · مناطق خارج الرياض تُضاف رسوم تنقل</p>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════
+     TESTIMONIALS
+══════════════════════════════════════════════════════ -->
+<section id="testimonials" class="relative overflow-hidden">
+  <div style="height:1px;background:linear-gradient(90deg,transparent,rgba(212,175,55,0.25),transparent);margin-bottom:90px;"></div>
+
+  <div style="position:absolute;top:0;left:0;right:0;bottom:0;background:radial-gradient(ellipse at 80% 20%, rgba(212,175,55,0.04) 0%, transparent 60%);pointer-events:none;"></div>
+
+  <div class="max-w-7xl mx-auto px-6 md:px-10 lg:px-16">
+
+    <div class="text-center mb-12 reveal">
+      <p class="eyebrow mb-4">✦ آراء العملاء</p>
+      <h2 class="font-arabic font-black text-3xl md:text-4xl mb-4">
+        كلامهم <span class="gold-text">يكفينا</span>
+      </h2>
+    </div>
+
+    <!-- Slider viewport -->
+    <div class="overflow-hidden relative">
+      <div class="testimonials-track" id="test-track">
+
+        <!-- Card 1 -->
+        <div class="testimonial-card px-3">
+          <div class="glass-light rounded-2xl p-6 h-full">
+            <div class="flex gap-1 mb-4">
+              <i data-lucide="star" class="star" style="width:16px;height:16px;fill:#D4AF37;"></i>
+              <i data-lucide="star" class="star" style="width:16px;height:16px;fill:#D4AF37;"></i>
+              <i data-lucide="star" class="star" style="width:16px;height:16px;fill:#D4AF37;"></i>
+              <i data-lucide="star" class="star" style="width:16px;height:16px;fill:#D4AF37;"></i>
+              <i data-lucide="star" class="star" style="width:16px;height:16px;fill:#D4AF37;"></i>
+            </div>
+            <p class="font-arabic text-cream-muted text-sm leading-relaxed mb-5">
+              "أريج موهبة نادرة! التقطت أجمل لحظات زفافي بعينٍ فنية لم أتوقعها. كل صورة تحكي قصة، وكأنها لوحة فنية. سأوصي بها لكل عروس."
+            </p>
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-full bg-gold/20 flex items-center justify-center flex-shrink-0">
+                <span class="font-arabic font-bold text-gold text-sm">ن</span>
+              </div>
+              <div>
+                <p class="font-arabic font-semibold text-cream text-sm">نورة الشمري</p>
+                <p class="font-arabic text-cream-muted text-xs">عروس · الرياض</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 2 -->
+        <div class="testimonial-card px-3">
+          <div class="glass-light rounded-2xl p-6 h-full">
+            <div class="flex gap-1 mb-4">
+              <i data-lucide="star" class="star" style="width:16px;height:16px;fill:#D4AF37;"></i>
+              <i data-lucide="star" class="star" style="width:16px;height:16px;fill:#D4AF37;"></i>
+              <i data-lucide="star" class="star" style="width:16px;height:16px;fill:#D4AF37;"></i>
+              <i data-lucide="star" class="star" style="width:16px;height:16px;fill:#D4AF37;"></i>
+              <i data-lucide="star" class="star" style="width:16px;height:16px;fill:#D4AF37;"></i>
+            </div>
+            <p class="font-arabic text-cream-muted text-sm leading-relaxed mb-5">
+              "من أفضل قراراتي هذا العام حجز أريج لحفل خطوبتي. الصور جاءت بجودة لا تصدق من جوال! الفلترة والإضاءة رائعة، وتسليمها كان في الوقت المحدد."
+            </p>
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-full bg-gold/20 flex items-center justify-center flex-shrink-0">
+                <span class="font-arabic font-bold text-gold text-sm">س</span>
+              </div>
+              <div>
+                <p class="font-arabic font-semibold text-cream text-sm">سارة العتيبي</p>
+                <p class="font-arabic text-cream-muted text-xs">خطوبة · جدة</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 3 -->
+        <div class="testimonial-card px-3">
+          <div class="glass-light rounded-2xl p-6 h-full">
+            <div class="flex gap-1 mb-4">
+              <i data-lucide="star" class="star" style="width:16px;height:16px;fill:#D4AF37;"></i>
+              <i data-lucide="star" class="star" style="width:16px;height:16px;fill:#D4AF37;"></i>
+              <i data-lucide="star" class="star" style="width:16px;height:16px;fill:#D4AF37;"></i>
+              <i data-lucide="star" class="star" style="width:16px;height:16px;fill:#D4AF37;"></i>
+              <i data-lucide="star" class="star" style="width:16px;height:16px;fill:#D4AF37;"></i>
+            </div>
+            <p class="font-arabic text-cream-muted text-sm leading-relaxed mb-5">
+              "أريج تفهم ما تريده العروس قبل أن تقوله. التزمت بكل تفصيلة اتفقنا عليها، وأضافت لمستها السحرية. الريلز الذي صنعته لي تجاوز ٥٠٠ ألف مشاهدة!"
+            </p>
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-full bg-gold/20 flex items-center justify-center flex-shrink-0">
+                <span class="font-arabic font-bold text-gold text-sm">م</span>
+              </div>
+              <div>
+                <p class="font-arabic font-semibold text-cream text-sm">مريم الدوسري</p>
+                <p class="font-arabic text-cream-muted text-xs">عروس · الدمام</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 4 -->
+        <div class="testimonial-card px-3">
+          <div class="glass-light rounded-2xl p-6 h-full">
+            <div class="flex gap-1 mb-4">
+              <i data-lucide="star" class="star" style="width:16px;height:16px;fill:#D4AF37;"></i>
+              <i data-lucide="star" class="star" style="width:16px;height:16px;fill:#D4AF37;"></i>
+              <i data-lucide="star" class="star" style="width:16px;height:16px;fill:#D4AF37;"></i>
+              <i data-lucide="star" class="star" style="width:16px;height:16px;fill:#D4AF37;"></i>
+              <i data-lucide="star" class="star" style="width:16px;height:16px;fill:#D4AF37;"></i>
+            </div>
+            <p class="font-arabic text-cream-muted text-sm leading-relaxed mb-5">
+              "وثّقت أريج حفل تخرج ابنتي بأسلوب راقٍ ومميز. الصور عبّرت عن فرحتنا بشكل أجمل مما تخيلناه. شكراً لكِ من القلب، ستبقى هذه اللحظات معنا للأبد."
+            </p>
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-full bg-gold/20 flex items-center justify-center flex-shrink-0">
+                <span class="font-arabic font-bold text-gold text-sm">ه</span>
+              </div>
+              <div>
+                <p class="font-arabic font-semibold text-cream text-sm">هند القحطاني</p>
+                <p class="font-arabic text-cream-muted text-xs">تخرج · مكة</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 5 -->
+        <div class="testimonial-card px-3">
+          <div class="glass-light rounded-2xl p-6 h-full">
+            <div class="flex gap-1 mb-4">
+              <i data-lucide="star" class="star" style="width:16px;height:16px;fill:#D4AF37;"></i>
+              <i data-lucide="star" class="star" style="width:16px;height:16px;fill:#D4AF37;"></i>
+              <i data-lucide="star" class="star" style="width:16px;height:16px;fill:#D4AF37;"></i>
+              <i data-lucide="star" class="star" style="width:16px;height:16px;fill:#D4AF37;"></i>
+              <i data-lucide="star" class="star" style="width:16px;height:16px;fill:#D4AF37;"></i>
+            </div>
+            <p class="font-arabic text-cream-muted text-sm leading-relaxed mb-5">
+              "طلبت أريج لتوثيق حفل عيد ميلاد ابنتي الصغيرة، وجاءت بصور أشبه بمجلة فاخرة! موهبتها في التقاط البراءة والفرح لا تُوصف. سأعود إليها دائماً."
+            </p>
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-full bg-gold/20 flex items-center justify-center flex-shrink-0">
+                <span class="font-arabic font-bold text-gold text-sm">ر</span>
+              </div>
+              <div>
+                <p class="font-arabic font-semibold text-cream text-sm">رنا السبيعي</p>
+                <p class="font-arabic text-cream-muted text-xs">حفل خاص · الرياض</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Controls -->
+    <div class="flex justify-center items-center gap-4 mt-8 reveal">
+      <button id="test-prev" class="w-10 h-10 rounded-full border border-gold/30 flex items-center justify-center text-cream-muted hover:border-gold hover:text-gold transition-all">
+        <i data-lucide="chevron-right" style="width:18px;height:18px;"></i>
+      </button>
+      <div id="test-dots" class="flex gap-2"></div>
+      <button id="test-next" class="w-10 h-10 rounded-full border border-gold/30 flex items-center justify-center text-cream-muted hover:border-gold hover:text-gold transition-all">
+        <i data-lucide="chevron-left" style="width:18px;height:18px;"></i>
+      </button>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════
+     CONTACT / BOOKING
+══════════════════════════════════════════════════════ -->
+<section id="contact" class="relative">
+  <div style="height:1px;background:linear-gradient(90deg,transparent,rgba(212,175,55,0.25),transparent);margin-bottom:90px;"></div>
+
+  <div style="position:absolute;bottom:0;right:0;width:500px;height:500px;background:radial-gradient(circle,rgba(212,175,55,0.04) 0%,transparent 70%);pointer-events:none;"></div>
+
+  <div class="max-w-5xl mx-auto px-6 md:px-10 relative">
+
+    <div class="text-center mb-12 reveal">
+      <p class="eyebrow mb-4">✦ احجزي معي</p>
+      <h2 class="font-arabic font-black text-3xl md:text-4xl mb-4">
+        ابدأي رحلة <span class="gold-text">توثيق ذكرياتكِ</span>
+      </h2>
+      <p class="font-arabic text-cream-muted text-sm max-w-md mx-auto">أرسلي تفاصيل مناسبتكِ وسأتواصل معكِ في أقرب وقت</p>
+    </div>
+
+    <div class="glass rounded-3xl p-6 md:p-10 reveal">
+      <form id="booking-form" onsubmit="handleFormSubmit(event)" novalidate>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mb-5">
+
+          <div>
+            <label class="font-arabic text-xs text-cream-muted block mb-2">الاسم الكريم *</label>
+            <input type="text" placeholder="اسمكِ الثلاثي" required
+              class="form-input w-full rounded-xl px-4 py-3 font-arabic text-sm" />
+          </div>
+
+          <div>
+            <label class="font-arabic text-xs text-cream-muted block mb-2">رقم الجوال *</label>
+            <input type="tel" placeholder="+٩٦٦ ×× ××× ××××" required
+              class="form-input w-full rounded-xl px-4 py-3 font-arabic text-sm" dir="ltr" />
+          </div>
+
+          <div>
+            <label class="font-arabic text-xs text-cream-muted block mb-2">نوع المناسبة *</label>
+            <select required class="form-input w-full rounded-xl px-4 py-3 font-arabic text-sm appearance-none">
+              <option value="" disabled selected class="bg-charcoal">اختاري نوع المناسبة</option>
+              <option value="wedding" class="bg-charcoal">زفاف</option>
+              <option value="engagement" class="bg-charcoal">خطوبة</option>
+              <option value="henna" class="bg-charcoal">ليلة الحناء</option>
+              <option value="birthday" class="bg-charcoal">عيد ميلاد</option>
+              <option value="graduation" class="bg-charcoal">تخرج</option>
+              <option value="other" class="bg-charcoal">مناسبة أخرى</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="font-arabic text-xs text-cream-muted block mb-2">تاريخ المناسبة *</label>
+            <input type="date" required
+              class="form-input w-full rounded-xl px-4 py-3 text-cream-muted text-sm" dir="ltr" />
+          </div>
+
+          <div>
+            <label class="font-arabic text-xs text-cream-muted block mb-2">المدينة</label>
+            <input type="text" placeholder="الرياض / جدة / ..."
+              class="form-input w-full rounded-xl px-4 py-3 font-arabic text-sm" />
+          </div>
+
+          <div>
+            <label class="font-arabic text-xs text-cream-muted block mb-2">الباقة المطلوبة</label>
+            <select class="form-input w-full rounded-xl px-4 py-3 font-arabic text-sm appearance-none">
+              <option value="" disabled selected class="bg-charcoal">اختاري الباقة</option>
+              <option value="silver" class="bg-charcoal">الفضية — ١٥٠٠ ر.س</option>
+              <option value="gold" class="bg-charcoal">الذهبية — ٢٨٠٠ ر.س</option>
+              <option value="royal" class="bg-charcoal">الملكية — ٤٥٠٠ ر.س</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="mb-6">
+          <label class="font-arabic text-xs text-cream-muted block mb-2">تفاصيل إضافية</label>
+          <textarea rows="4" placeholder="أخبريني عن مناسبتكِ وتوقعاتكِ..."
+            class="form-input w-full rounded-xl px-4 py-3 font-arabic text-sm resize-none"></textarea>
+        </div>
+
+        <button type="submit" class="btn-gold w-full py-4 rounded-2xl font-arabic font-bold text-base">
+          <span>✦ أرسلي طلب الحجز</span>
+        </button>
+      </form>
+
+      <!-- Success message (hidden by default) -->
+      <div id="form-success" class="hidden text-center py-8">
+        <div class="w-16 h-16 rounded-full bg-gold/10 border border-gold/30 flex items-center justify-center mx-auto mb-4">
+          <i data-lucide="check" class="text-gold" style="width:28px;height:28px;"></i>
+        </div>
+        <p class="font-arabic font-bold text-cream text-xl mb-2">شكراً لكِ! ✦</p>
+        <p class="font-arabic text-cream-muted text-sm">تم استلام طلبكِ. سأتواصل معكِ خلال ٢٤ ساعة إن شاء الله.</p>
+      </div>
+    </div>
+
+    <!-- Quick contact row -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6 reveal">
+      <a href="tel:+966500000000" class="glass-light rounded-2xl p-4 flex items-center gap-3 hover:border-gold/30 transition-colors">
+        <i data-lucide="phone" class="text-gold flex-shrink-0" style="width:20px;height:20px;"></i>
+        <div>
+          <p class="font-arabic text-xs text-cream-muted">اتصلي بنا</p>
+          <p class="font-arabic text-cream text-sm font-semibold" dir="ltr">+966 50 000 0000</p>
+        </div>
+      </a>
+      <a href="https://wa.me/966500000000" target="_blank" class="glass-light rounded-2xl p-4 flex items-center gap-3 hover:border-gold/30 transition-colors">
+        <i data-lucide="message-circle" class="text-gold flex-shrink-0" style="width:20px;height:20px;"></i>
+        <div>
+          <p class="font-arabic text-xs text-cream-muted">واتساب</p>
+          <p class="font-arabic text-cream text-sm font-semibold">تواصلي معي الآن</p>
+        </div>
+      </a>
+      <a href="https://instagram.com/areej.lens" target="_blank" class="glass-light rounded-2xl p-4 flex items-center gap-3 hover:border-gold/30 transition-colors">
+        <i data-lucide="instagram" class="text-gold flex-shrink-0" style="width:20px;height:20px;"></i>
+        <div>
+          <p class="font-arabic text-xs text-cream-muted">انستغرام</p>
+          <p class="font-arabic text-cream text-sm font-semibold">@areej.lens</p>
+        </div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════
+     FOOTER
+══════════════════════════════════════════════════════ -->
+<footer class="border-t border-gold/10 mt-20 py-12 px-6 md:px-10 lg:px-16">
+  <div class="max-w-7xl mx-auto">
+    <div class="flex flex-col md:flex-row justify-between items-center gap-8">
+
+      <!-- Brand -->
+      <div class="text-center md:text-right">
+        <p class="font-arabic font-black text-xl gold-text mb-1">أريج أحمد</p>
+        <p class="font-display italic text-cream-muted text-sm">Areej Ahmed · Mobile Photography</p>
+        <p class="font-arabic text-cream-muted text-xs mt-2 opacity-60">المملكة العربية السعودية · متاحة للسفر</p>
+      </div>
+
+      <!-- Nav links -->
+      <ul class="flex flex-wrap justify-center gap-6 list-none font-arabic text-xs text-cream-muted">
+        <li><a href="#about" class="hover:text-gold transition-colors">عني</a></li>
+        <li><a href="#portfolio" class="hover:text-gold transition-colors">الأعمال</a></li>
+        <li><a href="#pricing" class="hover:text-gold transition-colors">الباقات</a></li>
+        <li><a href="#contact" class="hover:text-gold transition-colors">التواصل</a></li>
+      </ul>
+
+      <!-- Social -->
+      <div class="flex gap-3">
+        <a href="#" class="social-btn" aria-label="انستغرام">
+          <i data-lucide="instagram" style="width:18px;height:18px;"></i>
+        </a>
+        <a href="#" class="social-btn" aria-label="تيك توك">
+          <i data-lucide="video" style="width:18px;height:18px;"></i>
+        </a>
+        <a href="#" class="social-btn" aria-label="واتساب">
+          <i data-lucide="message-circle" style="width:18px;height:18px;"></i>
+        </a>
+        <a href="#" class="social-btn" aria-label="سناب شات">
+          <i data-lucide="camera" style="width:18px;height:18px;"></i>
+        </a>
+      </div>
+    </div>
+
+    <div class="gold-line-full mt-8 mb-5"></div>
+
+    <p class="font-arabic text-center text-cream-muted text-xs opacity-40">
+      © ٢٠٢٥ أريج أحمد — جميع الحقوق محفوظة. صُنع بـ ❤ من قلب المملكة.
+    </p>
+  </div>
+</footer>
+
+<!-- ══════════════════════════════════════════════════════
+     JAVASCRIPT
+══════════════════════════════════════════════════════ -->
+<script>
+  // ─── Init Lucide Icons ─────────────────────────────────
+  lucide.createIcons();
+
+  // ─── Navbar scroll ─────────────────────────────────────
+  const navbar = document.getElementById('navbar');
+  window.addEventListener('scroll', () => {
+    navbar.classList.toggle('scrolled', window.scrollY > 50);
+  });
+
+  // ─── Mobile menu ───────────────────────────────────────
+  const hamburger = document.getElementById('hamburger');
+  const mobileMenu = document.getElementById('mobile-menu');
+  hamburger.addEventListener('click', () => {
+    mobileMenu.classList.toggle('open');
+  });
+  function closeMobileMenu() {
+    mobileMenu.classList.remove('open');
+  }
+
+  // ─── Hero slider ───────────────────────────────────────
+  let heroIndex = 0;
+  const heroSlides = document.querySelectorAll('.hero-slide');
+  const heroDots   = document.querySelectorAll('.slide-dot');
+
+  function goToSlide(i) {
+    heroSlides[heroIndex].classList.remove('active');
+    heroDots[heroIndex].style.width = '8px';
+    heroDots[heroIndex].classList.remove('bg-gold');
+    heroDots[heroIndex].classList.add('bg-cream/30');
+
+    heroIndex = (i + heroSlides.length) % heroSlides.length;
+
+    heroSlides[heroIndex].classList.add('active');
+    heroDots[heroIndex].style.width = '24px';
+    heroDots[heroIndex].classList.add('bg-gold');
+    heroDots[heroIndex].classList.remove('bg-cream/30');
+  }
+
+  heroDots.forEach((dot, i) => dot.addEventListener('click', () => goToSlide(i)));
+  setInterval(() => goToSlide(heroIndex + 1), 5000);
+
+  // ─── Scroll reveal ─────────────────────────────────────
+  const revealElements = document.querySelectorAll('.reveal, .reveal-left, .reveal-right');
+  const revealObserver = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+      }
+    });
+  }, { threshold: 0.1 });
+  revealElements.forEach(el => revealObserver.observe(el));
+
+  // Trigger hero reveals immediately
+  document.querySelectorAll('#hero .reveal').forEach((el, i) => {
+    setTimeout(() => el.classList.add('visible'), 200 + i * 150);
+  });
+
+  // ─── Portfolio filter ──────────────────────────────────
+  const filterBtns = document.querySelectorAll('.filter-btn');
+  const portfolioItems = document.querySelectorAll('#portfolio-grid .masonry-item');
+
+  filterBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      filterBtns.forEach(b => {
+        b.classList.remove('active', 'border-gold', 'text-gold');
+        b.classList.add('border-white/10', 'text-cream-muted');
+      });
+      btn.classList.add('active', 'border-gold', 'text-gold');
+      btn.classList.remove('border-white/10', 'text-cream-muted');
+
+      const cat = btn.dataset.cat;
+      portfolioItems.forEach(item => {
+        if (cat === 'all' || item.dataset.cat === cat) {
+          item.style.opacity = '1';
+          item.style.transform = 'scale(1)';
+          item.style.display = 'block';
+        } else {
+          item.style.opacity = '0';
+          item.style.transform = 'scale(0.95)';
+          setTimeout(() => { if(item.style.opacity === '0') item.style.display = 'none'; }, 300);
+        }
+      });
+    });
+  });
+
+  // ─── Lightbox ──────────────────────────────────────────
+  function openLightbox(src) {
+    document.getElementById('lightbox-img').src = src;
+    document.getElementById('lightbox').classList.add('open');
+    document.body.style.overflow = 'hidden';
+    lucide.createIcons();
+  }
+  function closeLightbox() {
+    document.getElementById('lightbox').classList.remove('open');
+    document.body.style.overflow = '';
+  }
+  document.getElementById('lightbox').addEventListener('click', (e) => {
+    if (e.target === e.currentTarget) closeLightbox();
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeLightbox();
+  });
+
+  // ─── Testimonials slider ───────────────────────────────
+  const track  = document.getElementById('test-track');
+  const dotsEl = document.getElementById('test-dots');
+  let testIndex = 0;
+
+  function getSlidesPerView() {
+    if (window.innerWidth >= 1024) return 3;
+    if (window.innerWidth >= 768)  return 2;
+    return 1;
+  }
+
+  const totalCards = track.querySelectorAll('.testimonial-card').length;
+
+  function buildTestDots() {
+    dotsEl.innerHTML = '';
+    const spv = getSlidesPerView();
+    const count = totalCards - spv + 1;
+    for (let i = 0; i < count; i++) {
+      const d = document.createElement('button');
+      d.className = i === testIndex
+        ? 'w-5 h-1.5 rounded-full bg-gold transition-all'
+        : 'w-1.5 h-1.5 rounded-full bg-cream/20 transition-all';
+      d.addEventListener('click', () => goToTest(i));
+      dotsEl.appendChild(d);
+    }
+  }
+
+  function goToTest(i) {
+    const spv = getSlidesPerView();
+    const maxIndex = totalCards - spv;
+    testIndex = Math.max(0, Math.min(i, maxIndex));
+    const cardW = track.querySelector('.testimonial-card').offsetWidth;
+    track.style.transform = `translateX(${testIndex * cardW}px)`;
+    buildTestDots();
+  }
+
+  document.getElementById('test-prev').addEventListener('click', () => goToTest(testIndex - 1));
+  document.getElementById('test-next').addEventListener('click', () => goToTest(testIndex + 1));
+
+  buildTestDots();
+  window.addEventListener('resize', () => { testIndex = 0; goToTest(0); buildTestDots(); });
+
+  // Auto-advance testimonials
+  setInterval(() => {
+    const spv = getSlidesPerView();
+    const maxIndex = totalCards - spv;
+    goToTest(testIndex < maxIndex ? testIndex + 1 : 0);
+  }, 4500);
+
+  // ─── Form submit ───────────────────────────────────────
+  function handleFormSubmit(e) {
+    e.preventDefault();
+    document.getElementById('booking-form').style.display = 'none';
+    document.getElementById('form-success').classList.remove('hidden');
+    lucide.createIcons();
+  }
+</script>
+</body>
+</html>
